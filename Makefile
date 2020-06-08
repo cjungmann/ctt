@@ -56,5 +56,5 @@ procopts.o : procopts.c ctt.h
 clean :
 	rm -f $(MODULES)
 	rm -f libctt.so
-	rm -f procopts key_reader line_reader
+	rm -f ctt cusses procopts key_reader line_reader test
 
