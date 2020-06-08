@@ -5,6 +5,8 @@
 extern struct termios _termios_start;
 extern int tty_handle;
 
+#include "cusses.h"
+
 /*************************
  * Base Library functions
  ************************/
