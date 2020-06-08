@@ -99,7 +99,7 @@ const char *keyreader_demo_text = "\n"
 void demonstrate_key_reader(void)
 {
    char buff[10];
-   ctt_init_key_reader();
+   ctt_start();
 
    puts(keyreader_demo_text);
 
