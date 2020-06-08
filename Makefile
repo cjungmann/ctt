@@ -5,7 +5,7 @@ LOCAL_LINK = -Wl,-R -Wl,. libctt.so
 
 BASEFLAGS = -Wall -Werror -ggdb
 # MODULES = procopts.o line_reader.o key_reader.o picker.o
-MODULES = procopts.o line_reader.o key_reader.o
+MODULES = ctt.o cusses.o procopts.o line_reader.o key_reader.o
 
 CC = gcc
 
@@ -20,6 +20,12 @@ test : test.c libctt.so
 #
 libctt.so : $(MODULES)
 	$(CC) ${LIB_CFLAGS} -o libctt.so $(MODULES)
+
+ctt.o : ctt.h ctt.c
+	$(CC) ${LIB_CFLAGS} -c -o ctt.o ctt.c
+
+cusses.o : cusses.h cusses.c
+	$(CC) ${LIB_CFLAGS} -c -o cusses.o cusses.c
 
 line_reader.o : line_reader.c ctt.h
 	$(CC) ${LIB_CFLAGS} -c -o line_reader.o line_reader.c

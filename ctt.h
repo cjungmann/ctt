@@ -1,3 +1,16 @@
+#ifndef CTT_H
+#define CTT_H
+
+#define EXPORT __attribute__((visibility("default")))
+extern struct termios _termios_start;
+extern int tty_handle;
+
+/*************************
+ * Base Library functions
+ ************************/
+
+void ctt_start(void);
+int ctt_is_started(void);
 
 /************************************
  * Line Reader struct and functions 
@@ -23,7 +36,6 @@ int ctt_get_line(LRScope *scope, const char** line, const char** line_end);
  * Key Reader functions
  ***********************/
 
-void ctt_init_key_reader(void);
 int ctt_get_keypress(char *buff, int bufflen);
 
 
@@ -50,3 +62,6 @@ void ctt_opt_set_string(const ctt_Option *option, const char *value);
 
 void ctt_show_options(const ctt_Option *options);
 void ctt_process_options(const ctt_Option *options, int argc, const char **argv);
+
+
+#endif
