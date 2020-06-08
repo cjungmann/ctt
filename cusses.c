@@ -16,10 +16,10 @@ void unset_raw_mode(void);
 int tty_write(const char *str)           { return write(tty_handle, str, strlen(str)); }
 int tty_read(char *buffer, int len_buff) { return read(tty_handle, buffer, len_buff); }
 
-void ctt_clear(void)                  { tty_write("[2J"); }
-void ctt_set_cursor(int row, int col) { dprintf(tty_handle, "[%d;%dH", row, col); }
+EXPORT void ctt_clear(void)                  { tty_write("[2J"); }
+EXPORT void ctt_set_cursor(int row, int col) { dprintf(tty_handle, "[%d;%dH", row, col); }
 
-void ctt_get_cursor(int *row, int *col)
+EXPORT void ctt_get_cursor(int *row, int *col)
 {
    char buff[20];
 
@@ -65,7 +65,7 @@ void ctt_get_cursor(int *row, int *col)
    }
 }
 
-int ctt_get_screen_size(int *rows, int *cols)
+EXPORT void ctt_get_screen_size(int *rows, int *cols)
 {
    // Refer to man iocto_tty(2)
    struct winsize size;
@@ -75,8 +75,6 @@ int ctt_get_screen_size(int *rows, int *cols)
       *rows = size.ws_row;
       *cols = size.ws_col;
    }
-
-   return rval;
 }
 
 #ifdef CCONTROL_MAIN
@@ -91,8 +89,8 @@ int main(int argc, const char **argv)
    int rows, cols;
    printf("In console_control.\n");
 
-   if (!ctt_get_screen_size(&rows, &cols))
-      printf("The screen has %d rows of %d columns.\n", rows, cols);
+   ctt_get_screen_size(&rows, &cols);
+   printf("The screen has %d rows of %d columns.\n", rows, cols);
 
    ctt_get_cursor(&rows, &cols);
    printf("The cursor is at row %d, column %d.\n", rows, cols);
