@@ -5,10 +5,7 @@
 #include <ctype.h>
 #include <assert.h>
 
-#define EXPORT __attribute__((visibility("default")))
-
-struct termios _termios_start = {0};
-int termios_set = 0;
+#include "ctt.h"
 
 void set_raw_mode(void)
 {
@@ -53,22 +50,13 @@ void set_default_read_mode(void)
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &tcur);
 }
 
-EXPORT void ctt_init_key_reader(void)
-{
-   if (!termios_set)
-   {
-      tcgetattr(STDIN_FILENO, &_termios_start);
-      termios_set = 1;
-   }
-}
-
 EXPORT int ctt_get_keypress(char *buff, int bufflen)
 {
    int bytes_read;
    char *ptr = buff;
 
    // Must call ctt_init_key_reader() before using ctt_get_keypress();
-   assert(termios_set);
+   assert(ctt_is_started());
 
    set_raw_mode();
 
@@ -89,6 +77,7 @@ EXPORT int ctt_get_keypress(char *buff, int bufflen)
 #ifdef KEY_READER_MAIN
 
 #include <stdio.h>
+#include "cusses.c"
 
 void print_char_vals(const char *str)
 {
@@ -107,7 +96,8 @@ int main(int argc, const char **argv)
 {
    char buff[10];
    int count = 0;
-   ctt_init_key_reader();
+
+   ctt_start();
 
    printf("Press a key to see its output.\n");
    printf("\n");
