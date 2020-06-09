@@ -1,7 +1,7 @@
-#include "ctt.h"
-
 #include <stdio.h>
 #include <string.h>
+
+#include "ctt.h"
 
 void show_list(int row, int column,
                int rows, int columns,
@@ -10,7 +10,6 @@ void show_list(int row, int column,
                const char **texts,
                const char **end)
 {
-   ctt_clear();
    ctt_set_cursor(row,0);
 
    const char **ptr = texts + top;
@@ -23,7 +22,7 @@ void show_list(int row, int column,
       if (ptr == sel)
          printf("[43m");
 
-      printf("%s", *ptr);
+      printf("%-*s", columns, *ptr);
 
       if (ptr == sel)
          printf("[m");
@@ -33,35 +32,28 @@ void show_list(int row, int column,
    }
 }
 
-const char** seek_end(const char **list)
-{
-   while (*list)
-      ++list;
-   return list;
-}
-
 int is_uparrow(const char *buff) { return 0 == strcmp(buff, "[A"); }
 int is_downarrow(const char *buff) { return 0 == strcmp(buff, "[B"); }
 int is_enter(const char *buff) { return *buff == 13; }
 
-EXPORT int ctt_pick_from_list(const char **list,
-                              const char **end,
-                              int rows_allowed,
-                              int cols_allowed,
+EXPORT int ctt_pick_from_list(ObjPlace *placement,
+                              const char **list,
+                              int list_count,
                               int top,
                               int selected)
 {
    char kpbuff[10];
 
-   int count = end - list;
+   const char **end = list + list_count;
 
    while (1)
    {
-      show_list(10, 10, 10, 80,
+      show_list(placement->row,
+                placement->column,
+                placement->height,
+                placement->width,
                 top, selected,
                 list, end);
-
-      printf("\nThere are %d items in the list.\n", count);
 
       ctt_get_keypress(kpbuff, sizeof(kpbuff));
 
@@ -76,9 +68,9 @@ EXPORT int ctt_pick_from_list(const char **list,
       }
       else if (is_downarrow(kpbuff))
       {
-         if (selected < count-1)
+         if (selected < list_count-1)
             ++selected;
-         if (selected > top + rows_allowed - 1)
+         if (selected > top + placement->height - 1)
             ++top;
       }
       else if (is_enter(kpbuff))
@@ -94,6 +86,7 @@ EXPORT int ctt_pick_from_list(const char **list,
 #ifdef LISTPICK_MAIN
 
 #include <stdio.h>
+#include <unistd.h>
 
 const char *items[] = {
    "Mom",
@@ -114,54 +107,43 @@ const char *items[] = {
    NULL
 };
 
+const char** seek_end(const char **list)
+{
+   while (*list)
+      ++list;
+   return list;
+}
+
+void fill_screen(int fill_char)
+{
+   int rows, cols;
+
+   ctt_clear();
+   ctt_get_screen_size(&rows, &cols);
+
+   for (int r=0; r<rows; ++r)
+   {
+      for (int c=0; c<cols; ++c)
+         write(tty_handle, &fill_char, 1);
+      write(tty_handle, "\n", 1);
+   }
+}
 
 int main(int argc, const char **argv)
 {
    ctt_start();
 
-   int selected = ctt_pick_from_list(items,
-                                     seek_end(items),
-                                     10, 80,
+   ObjPlace placement = { 10, 10, 10, 40 };
+
+   fill_screen('.');
+
+   int selected = ctt_pick_from_list(&placement,
+                                     items,
+                                     seek_end(items) - items,
                                      0, 0);
 
    if (selected > -1)
       printf("You selected item %d (%s).\n", selected, items[selected]);
-
-   /* const char **end = seek_end(items); */
-   /* char kpbuff[10]; */
-
-   /* int top = 0; */
-   /* int selected = 0; */
-   /* int count = end - items; */
-
-   /* while (1) */
-   /* { */
-   /*    show_list(0, 0, 10, 80, */
-   /*              top, selected, */
-   /*              items, end); */
-
-   /*    printf("\nThere are %d items in the list.\n", count); */
-
-   /*    ctt_get_keypress(kpbuff, sizeof(kpbuff)); */
-
-   /*    if (is_uparrow(kpbuff)) */
-   /*    { */
-   /*       if (selected > 0) */
-   /*          --selected; */
-   /*    } */
-   /*    else if (is_downarrow(kpbuff)) */
-   /*    { */
-   /*       if (selected < count-1) */
-   /*          ++selected; */
-   /*    } */
-   /*    else if (is_enter(kpbuff)) */
-   /*    { */
-   /*       printf("You selected %d (%s).\n", selected, items[selected]); */
-   /*       break; */
-   /*    } */
-   /*    else if (*kpbuff == 'q') */
-   /*       break; */
-   /* } */
 
    return 0;
 }
