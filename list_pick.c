@@ -11,14 +11,15 @@ void show_list(int row, int column,
                const char **end)
 {
    ctt_clear();
-   ctt_set_cursor(row,column);
-
+   ctt_set_cursor(row,0);
 
    const char **ptr = texts + top;
    const char **bottom = ptr + rows;
    const char **sel = texts + selected;
    while (ptr < end && ptr < bottom)
    {
+      ctt_cursor_right(column);
+
       if (ptr == sel)
          printf("[43m");
 
@@ -56,7 +57,7 @@ EXPORT int ctt_pick_from_list(const char **list,
 
    while (1)
    {
-      show_list(0, 0, 10, 80,
+      show_list(10, 10, 10, 80,
                 top, selected,
                 list, end);
 
