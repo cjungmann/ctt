@@ -36,22 +36,13 @@ key_reader.o : key_reader.c ctt.h
 procopts.o : procopts.c ctt.h
 	$(CC) ${LIB_CFLAGS} -c -o procopts.o procopts.c
 
-#
-#
-# Executable and constituent object files:
-#
-# scanner : scanner.c fields.o libpsyslog.so
-# 	$(CC) ${BASEFLAGS} -L. -o scanner $(MODULES) scanner.c ${LOCAL_LINK}  -lclargs
+install :
+	install -D --mode=755 libctt.so /usr/lib
+	install -D --mode=755 ctt.h     /usr/local/include
 
-# fields.o : fields.c fields.h
-# 	$(CC) ${BASEFLAGS} -c -o fields.o fields.c
-
-#
-#
-# Extras:
-#
-# debug :
-# 	$(CC) ${BASEFLAGS} -o scanner $(MODULES) scanner.c -lclargsd
+uninstall :
+	rm -f /usr/lib/libctt.so
+	rm -f /usr/local/include/ctt.h
 
 clean :
 	rm -f $(MODULES)
