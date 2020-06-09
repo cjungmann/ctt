@@ -9,8 +9,8 @@
 #include "ctt.h"
 
 struct termios _termios_start = {0};
-int ctt_started = 0;
-int tty_handle = -1;
+EXPORT int ctt_started = 0;
+EXPORT int tty_handle = -1;
 
 EXPORT void ctt_start(void)
 {

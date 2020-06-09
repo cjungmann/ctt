@@ -1,9 +1,11 @@
 #ifndef CTT_H
 #define CTT_H
 
+#include <termios.h>
+
 #define EXPORT __attribute__((visibility("default")))
-extern struct termios _termios_start;
-extern int tty_handle;
+struct termios _termios_start;
+int tty_handle;
 
 #include "cusses.h"
 
@@ -13,6 +15,15 @@ extern int tty_handle;
 
 void ctt_start(void);
 int ctt_is_started(void);
+
+/* Generic structure for identifying placement intentions. */
+typedef struct ctt_object_placement
+{
+   int   row;
+   int   column;
+   int   height;
+   int   width;
+} ObjPlace;
 
 /************************************
  * Line Reader struct and functions 
@@ -40,6 +51,15 @@ int ctt_get_line(LRScope *scope, const char** line, const char** line_end);
 
 int ctt_get_keypress(char *buff, int bufflen);
 
+/***********************
+ * list_pick.c function
+ **********************/
+
+int ctt_pick_from_list(ObjPlace *placement,
+                       const char **list,
+                       int list_count,
+                       int top,
+                       int selected);
 
 /**********************************
  * Command-line Options processing
