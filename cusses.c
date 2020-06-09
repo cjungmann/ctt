@@ -16,6 +16,8 @@ void unset_raw_mode(void);
 int tty_write(const char *str)           { return write(tty_handle, str, strlen(str)); }
 int tty_read(char *buffer, int len_buff) { return read(tty_handle, buffer, len_buff); }
 
+EXPORT void ctt_cursor_right(int chars)      { dprintf(tty_handle, "[%dC", chars); }
+
 EXPORT void ctt_clear(void)                  { tty_write("[2J"); }
 EXPORT void ctt_set_cursor(int row, int col) { dprintf(tty_handle, "[%d;%dH", row, col); }
 
