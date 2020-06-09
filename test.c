@@ -13,6 +13,7 @@
 int flagShowHelp = 0;
 int flagKeyReader = 0;
 int flagLineReader = 0;
+int flagListPick = 0;
 const char *FileName = NULL;
 unsigned int BufferSize = 0;
 
@@ -22,6 +23,7 @@ ctt_Option opts[] = {
    { 'b', "Set the buffer size.",   &BufferSize,     ctt_opt_set_int },
    { 'r', "Run key_reader demo.",   &flagKeyReader,  NULL },
    { 'l', "Run line_reader demo.",  &flagLineReader, NULL },
+   { 'p', "Run list_pick demo.",   &flagListPick,    NULL },
    OPTS_END
 };
 
@@ -112,8 +114,65 @@ void demonstrate_key_reader(void)
    printf("...you pressed 'q' to finish this demonstration.\n");
 }
 
+
+void fill_screen(int fill_char)
+{
+   int rows, cols;
+
+   ctt_clear();
+   ctt_get_screen_size(&rows, &cols);
+
+   for (int r=0; r<rows; ++r)
+   {
+      for (int c=0; c<cols; ++c)
+         write(tty_handle, &fill_char, 1);
+      write(tty_handle, "\n", 1);
+   }
+}
+
+void demonstrate_list_pick(void)
+{
+   const char *items[] = {
+      "Mom",
+      "Dad",
+      "Sister",
+      "Brother",
+      "Aunt",
+      "Uncle",
+      "Grandma",
+      "Grandpa",
+      "Cousin",
+      "Son",
+      "Daughter",
+      "Son-in-law",
+      "Daughter-in-law",
+      "Granddaughter",
+      "Grandson"
+   };
+
+   int array_len = sizeof(items) / sizeof(char*);
+
+   ObjPlace placement = { 10, 10, 10, 40 };
+
+   fill_screen('.');
+
+   int selected = ctt_pick_from_list(&placement,
+                                     items,
+                                     array_len,
+                                     0, 0);
+
+   if (selected > -1)
+      printf("You selected item %d (%s).\n", selected, items[selected]);
+
+   ctt_clear();
+}
+
+
+
 int main(int argc, const char **argv)
 {
+   ctt_start();
+
    ctt_process_options(opts, argc, argv);
 
    if (flagShowHelp)
@@ -135,6 +194,9 @@ int main(int argc, const char **argv)
 
       if (flagLineReader)
          demonstrate_line_reader();
+
+      if (flagListPick)
+         demonstrate_list_pick();
       
    }
 
