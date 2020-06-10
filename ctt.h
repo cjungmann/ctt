@@ -16,6 +16,22 @@ int tty_handle;
 void ctt_start(void);
 int ctt_is_started(void);
 
+
+
+/************************
+ * seek_indexed_string()
+ ***********************/                      
+typedef struct _indexed_string
+{
+   int index;
+   const char *str;
+} NString;
+
+#define END_STRNDX { -1, NULL }
+const char *get_indexed_string(const NString *nstrings, int value);
+
+
+
 /* Generic structure for identifying placement intentions. */
 typedef struct ctt_object_placement
 {
@@ -24,6 +40,23 @@ typedef struct ctt_object_placement
    int   height;
    int   width;
 } ObjPlace;
+
+/*************************
+ * dir_iterate.c
+ ****************/
+// Calback function for ctt_getdents()
+typedef void (*ctt_usedent_t)(const char *name,
+                              const char *dir,
+                              char d_type,
+                              long inode,
+                              void *data);
+
+int ctt_getdents(ctt_usedent_t duser,
+                 const char *dirpath,
+                 char *buff,
+                 int bufflen,
+                 void *data);
+
 
 /************************************
  * Line Reader struct and functions 
