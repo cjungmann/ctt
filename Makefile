@@ -5,7 +5,7 @@ LOCAL_LINK = -Wl,-R -Wl,. libctt.so
 
 BASEFLAGS = -Wall -Werror -ggdb
 # MODULES = procopts.o line_reader.o key_reader.o picker.o
-MODULES = ctt.o cusses.o line_reader.o list_pick.o key_reader.o procopts.o
+MODULES = ctt.o cusses.o dir_iterate.o line_reader.o list_pick.o key_reader.o procopts.o
 
 CC = gcc
 
@@ -23,6 +23,9 @@ libctt.so : $(MODULES)
 
 ctt.o : ctt.h ctt.c
 	$(CC) ${LIB_CFLAGS} -c -o ctt.o ctt.c
+
+dir_iterate.o : dir_iterate.c
+	$(CC) ${LIB_CFLAGS} -c -o dir_iterate.o dir_iterate.c
 
 cusses.o : cusses.h cusses.c
 	$(CC) ${LIB_CFLAGS} -c -o cusses.o cusses.c
@@ -42,7 +45,7 @@ procopts.o : procopts.c ctt.h
 install :
 	install -D --mode=755 libctt.so /usr/lib
 	install -D --mode=755 ctt.h     /usr/local/include
-	include -D --mode=755 cusses.h  /usr/local/include
+	install -D --mode=755 cusses.h  /usr/local/include
 
 uninstall :
 	rm -f /usr/lib/libctt.so
@@ -52,5 +55,5 @@ uninstall :
 clean :
 	rm -f $(MODULES)
 	rm -f libctt.so
-	rm -f ctt cusses procopts key_reader line_reader test
+	rm -f ctt cusses dir_iterate key_reader line_reader list_pick procopts test
 
