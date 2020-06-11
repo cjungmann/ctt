@@ -7,6 +7,7 @@
 #include <fcntl.h>     //  for open()
 #include <unistd.h>    /// for close() !?
 
+#include <dirent.h>    // for DT_ file types
 
 #include "ctt.h"
 
@@ -15,7 +16,9 @@ int flagKeyReader = 0;
 int flagLineReader = 0;
 int flagListPick = 0;
 const char *FileName = NULL;
+const char *GetDentsDir = NULL;
 unsigned int BufferSize = 0;
+
 
 ctt_Option opts[] = {
    { 'h', "Show this help screen.", &flagShowHelp,   NULL },
@@ -23,7 +26,8 @@ ctt_Option opts[] = {
    { 'b', "Set the buffer size.",   &BufferSize,     ctt_opt_set_int },
    { 'r', "Run key_reader demo.",   &flagKeyReader,  NULL },
    { 'l', "Run line_reader demo.",  &flagLineReader, NULL },
-   { 'p', "Run list_pick demo.",   &flagListPick,    NULL },
+   { 'p', "Run list_pick demo.",    &flagListPick,   NULL },
+   { 'd', "Set getdents dir.",      &GetDentsDir,    ctt_opt_set_string },
    OPTS_END
 };
 
@@ -167,6 +171,41 @@ void demonstrate_list_pick(void)
    ctt_clear();
 }
 
+/**************************************************************
+ * demonstrate_getdents() support array, callback and function
+ *************************************************************/
+
+// You can test links, block and character devices in /dev directory
+NString DType_Colors[] = {
+   { DT_REG,     "" },
+   { DT_DIR,     "[34;1m" },
+   { DT_LNK,     "[36;1m" },
+   { DT_FIFO,    "[33;1;48;5;236m" },  // using VT100 background (48;5;nnn) colors
+   { DT_SOCK,    "[32;1;48;5;236m" },  // using VT100 background (48;5;nnn) colors
+   { DT_BLK,     "[33;2m" },
+   { DT_CHR,     "[33;1m" },
+   { DT_UNKNOWN, "[31;1m" },
+   END_STRNDX
+};
+void usedent_callback(const char *name,
+                      const char *dir,
+                      char d_type,
+                      long inode,
+                      void *data)
+{
+   int *count = (int*)data;
+   const char *tcolor = ctt_indexed_string(DType_Colors, d_type);
+
+   printf("%-4d: %s%s[m\n", ++(*count), tcolor, name);
+}
+
+void demonstrate_getdents(void)
+{
+   int count = 0;
+   char *buff = (char*)alloca(BufferSize);
+   ctt_getdents(usedent_callback, GetDentsDir, buff, BufferSize, &count);
+}
+
 
 
 int main(int argc, const char **argv)
@@ -175,8 +214,12 @@ int main(int argc, const char **argv)
 
    ctt_process_options(opts, argc, argv);
 
+   printf("GetDentsDir is \"%s\"\n", GetDentsDir);
+
    if (flagShowHelp)
       ctt_show_options(opts);
+   else if (GetDentsDir)
+      demonstrate_getdents();
    else
    {
       if (FileName)
