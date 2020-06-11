@@ -8,6 +8,7 @@
 #include <unistd.h>    /// for close() !?
 
 #include <dirent.h>    // for DT_ file types
+#include <string.h>    // for strerror()
 
 #include "ctt.h"
 
@@ -17,7 +18,7 @@ int flagLineReader = 0;
 int flagListPick = 0;
 const char *FileName = NULL;
 const char *GetDentsDir = NULL;
-unsigned int BufferSize = 0;
+unsigned int BufferSize = 1024;
 
 
 ctt_Option opts[] = {
@@ -178,15 +179,16 @@ void demonstrate_list_pick(void)
 // You can test links, block and character devices in /dev directory
 NString DType_Colors[] = {
    { DT_REG,     "" },
-   { DT_DIR,     "[34;1m" },
-   { DT_LNK,     "[36;1m" },
-   { DT_FIFO,    "[33;1;48;5;236m" },  // using VT100 background (48;5;nnn) colors
-   { DT_SOCK,    "[32;1;48;5;236m" },  // using VT100 background (48;5;nnn) colors
-   { DT_BLK,     "[33;2m" },
-   { DT_CHR,     "[33;1m" },
-   { DT_UNKNOWN, "[31;1m" },
+   { DT_DIR,     "\e[34;1m" },
+   { DT_LNK,     "\e[36;1m" },
+   { DT_FIFO,    "\e[33;1;48;5;236m" },  // using VT100 background (48;5;nnn) colors
+   { DT_SOCK,    "\e[32;1;48;5;236m" },  // using VT100 background (48;5;nnn) colors
+   { DT_BLK,     "\e[33;2m" },
+   { DT_CHR,     "\e[33;1m" },
+   { DT_UNKNOWN, "\e[31;1m" },
    END_STRNDX
 };
+
 void usedent_callback(const char *name,
                       const char *dir,
                       char d_type,
@@ -203,7 +205,14 @@ void demonstrate_getdents(void)
 {
    int count = 0;
    char *buff = (char*)alloca(BufferSize);
-   ctt_getdents(usedent_callback, GetDentsDir, buff, BufferSize, &count);
+   if (buff)
+   {
+      int rerrno = ctt_getdents(usedent_callback, GetDentsDir, buff, BufferSize, &count);
+      if (rerrno)
+         printf("ctt_getdents failed with %s.\n", strerror(rerrno));
+   }
+   else
+      printf("Failed to secure %d memory.\n", BufferSize);
 }
 
 
