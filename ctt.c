@@ -27,7 +27,7 @@ EXPORT int ctt_is_started(void)
    return ctt_started && tty_handle > -1;
 }
 
-EXPORT const char *get_indexed_string(const NString *nstrings, int value)
+EXPORT const char *ctt_indexed_string(const NString *nstrings, int value)
 {
    while (nstrings)
    {

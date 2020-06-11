@@ -28,7 +28,7 @@ typedef struct _indexed_string
 } NString;
 
 #define END_STRNDX { -1, NULL }
-const char *get_indexed_string(const NString *nstrings, int value);
+const char *ctt_indexed_string(const NString *nstrings, int value);
 
 
 
