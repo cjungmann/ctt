@@ -2,6 +2,7 @@
 #define CTT_H
 
 #include <termios.h>
+#include <dirent.h>
 
 #define EXPORT __attribute__((visibility("default")))
 struct termios _termios_start;
