@@ -27,6 +27,7 @@ EXPORT int ctt_getdents(ctt_usedent_t duser, const char *dirpath, char *buff, in
 {
    int fd = open(dirpath, O_RDONLY | O_NONBLOCK | O_DIRECTORY);
    int bytes_read, buff_index;
+   int retval = 0;
    int d_type;
    LDirent *dptr;
    if (fd)
@@ -36,7 +37,10 @@ EXPORT int ctt_getdents(ctt_usedent_t duser, const char *dirpath, char *buff, in
          bytes_read = syscall(SYS_getdents, fd, buff, bufflen);
 
          if (bytes_read == -1)
+         {
+            retval = errno;
             break;
+         }
 
          if (bytes_read == 0)
             break;
@@ -56,7 +60,7 @@ EXPORT int ctt_getdents(ctt_usedent_t duser, const char *dirpath, char *buff, in
       close(fd);
    }
 
-   return errno;
+   return retval;
 }
 
 #ifdef DIR_ITERATE_MAIN
@@ -110,7 +114,7 @@ void dent_user_colored(const char *name, const char *dir, char type, long inode,
 {
    int *count = (int*)data;
 
-   const char *colstr = get_indexed_string(DType_Colors, type);
+   const char *colstr = ctt_indexed_string(DType_Colors, type);
    if (!colstr)
       colstr = "[31;1m";
 
@@ -121,7 +125,7 @@ void dent_user_named(const char *name, const char *dir, char type, long inode, v
 {
    int *count = (int*)data;
 
-   const char *colname = get_indexed_string(DType_Names, type);
+   const char *colname = ctt_indexed_string(DType_Names, type);
    if (!colname)
       colname = "un-typed";
 
@@ -148,7 +152,7 @@ void with_opendir(void)
 
       while ((dire = readdir(fstr)))
       {
-         const char *typename = get_indexed_string(DType_Names, dire->d_type);
+         const char *typename = ctt_indexed_string(DType_Names, dire->d_type);
          if (!typename)
             typename = "un-typed";
          printf("%-4d: %s (%s)\n", ++count, dire->d_name, typename);
