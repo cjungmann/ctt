@@ -119,5 +119,11 @@ void ctt_opt_set_string(const ctt_Option *option, const char *value);
 void ctt_show_options(const ctt_Option *options);
 void ctt_process_options(const ctt_Option *options, int argc, const char **argv);
 
+/**
+ * Miscellaneous functions
+ */
+
+int ctt_itoa_buff(int value, int base, char *buffer, int buffer_len);
+
 
 #endif

@@ -16,6 +16,7 @@ int flagShowHelp = 0;
 int flagKeyReader = 0;
 int flagLineReader = 0;
 int flagListPick = 0;
+int flagItoaTest = 0;
 const char *FileName = NULL;
 const char *GetDentsDir = NULL;
 unsigned int BufferSize = 1024;
@@ -28,6 +29,7 @@ ctt_Option opts[] = {
    { 'r', "Run key_reader demo.",   &flagKeyReader,  NULL },
    { 'l', "Run line_reader demo.",  &flagLineReader, NULL },
    { 'p', "Run list_pick demo.",    &flagListPick,   NULL },
+   { 'i', "Run ctt_itoa_buff test.",&flagItoaTest,   NULL },
    { 'd', "Set getdents dir.",      &GetDentsDir,    ctt_opt_set_string },
    OPTS_END
 };
@@ -215,6 +217,31 @@ void demonstrate_getdents(void)
       printf("Failed to secure %d memory.\n", BufferSize);
 }
 
+void run_itoa_subtest(int buffer_len, int value)
+{
+   char *buff = alloca(buffer_len);
+   if (ctt_itoa_buff(value, 10, buff, buffer_len))
+      printf("Converting %d with %d-length buffer returns \"%s\"\n",
+             value, buffer_len, buff);
+   else
+      printf("Converting %d with %d-length buffer overflows.\n",
+             value, buffer_len);
+}
+
+void run_itoa_test(void)
+{
+   printf("Small test.\n");
+   run_itoa_subtest(2, 1);
+   printf("\n Overflow test:\n");
+   run_itoa_subtest(5, 12345);
+
+   printf("Odd-digit count reversal test:\n");
+   run_itoa_subtest(10, 12345);
+
+   printf("Even-digit count reversal test:\n");
+   run_itoa_subtest(10, 123456);
+}
+
 
 
 int main(int argc, const char **argv)
@@ -249,7 +276,9 @@ int main(int argc, const char **argv)
 
       if (flagListPick)
          demonstrate_list_pick();
-      
+
+      if (flagItoaTest)
+         run_itoa_test();
    }
 
    return 0;

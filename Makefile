@@ -5,7 +5,7 @@ LOCAL_LINK = -Wl,-R -Wl,. libctt.so
 
 BASEFLAGS = -Wall -Werror -ggdb
 # MODULES = procopts.o line_reader.o key_reader.o picker.o
-MODULES = ctt.o cusses.o dir_iterate.o line_reader.o list_pick.o key_reader.o procopts.o
+MODULES = ctt.o cusses.o dir_iterate.o line_reader.o list_pick.o key_reader.o procopts.o utilities.o
 
 CC = gcc
 
@@ -41,6 +41,9 @@ key_reader.o : key_reader.c ctt.h
 
 procopts.o : procopts.c ctt.h
 	$(CC) ${LIB_CFLAGS} -c -o procopts.o procopts.c
+
+utilities.o : utilities.c ctt.h
+	$(CC) ${LIB_CFLAGS} -c -o utilities.o utilities.c
 
 install :
 	install -D --mode=755 libctt.so /usr/lib
