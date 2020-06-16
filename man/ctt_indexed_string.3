@@ -1,0 +1,125 @@
+.TH ctt_indexed_string 3 "\n[year]-\n[mo]-\n[dy]" "Linux"
+.
+.SH NAME
+ctt_indexed_string - Associates strings with integer values
+.
+.SH SYNOPSIS
+.PP
+.B #include <ctt.h>
+.PP
+.BI "const char *ctt_indexed_string(const NString *" nstrings, " int  " value );
+.
+.SH DESCRIPTION
+Return a string pointer that matches an integer index.
+.PP
+The
+.I NString
+struct is a simple structure that defines an integer/string pair.  The
+.IR ctt_indexed_string ()
+function searchs for an integer match in an array of
+.I NString
+structs to find and then return the matching string value.
+.PP
+.in +4n
+.EX
+typedef struct _indexed_string
+{
+   int index;
+   const char *str;
+} NString;
+.EE
+.in
+.PP
+These is a special
+.I NString
+.RB "value, " END_STRNDX ", with"
+.IR index " = -1"
+that signals the end of an array of
+.I NString
+values.
+.TP
+.I index
+The integer value associated with a string value.  Note that
+.I index
+values in a set of
+.I NString
+records need not be consecutive or ordered.
+.TP
+.I str
+is the string to associated with the integer value.
+.
+.SH RETURN VALUE
+The function returns a pointer to the string that matches the
+.I index
+argument value.  
+.B NULL
+is returned if no match can be made.
+.SH EXAMPLE
+.EX
+#include <stdio.h>
+#include <errno.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <ctt.h>
+
+NString socket_errors[] = {
+   { EACCES,          "Permission denied" },
+   { EAFNOSUPPORT,    "Address family not supported" },
+   { EINVAL,          "Invalid or unknown type, protocol, or protocol family" },
+   { EMFILE,          "Exceeded per-process limit of open files" },
+   { ENFILE,          "Exceded system-wide limit of open files" },
+   { ENOBUFS,         "Out of memory" },
+   { ENOMEM,          "Out of memory" },
+   { EPROTONOSUPPORT, "Protocol not supported in this domain" },
+   END_STRNDX
+};
+
+int get_socket(int domain, int type, int protocol)
+{
+   int sock = socket(domain, type, protocol);
+   if (sock == -1)
+   {
+      const char *estring = ctt_indexed_string(socket_errors, errno);
+      if (estring)
+         printf("Socket creation failed: %s.\n", estring);
+      else
+         printf("Unknown error.\n");
+   }
+
+   return sock;
+}
+
+int main(int argc, const char **argv)
+{
+   int sock = get_socket(AF_INET, SOCK_STREAM, 0);
+   if (sock > -1)
+   {
+      printf("Socket success.\n");
+      close(sock);
+   }
+   return 0;
+}
+.EE
+.
+.SH SEE ALSO
+.TH ctt_getdents 3 "\n[year]-\n[mo]-\n[dy]" "Linux"
+.
+.SH NAME
+ctt_getdents - 
+.
+.SH SYNOPSIS
+.PP
+.B #include <ctt.h>
+.PP
+.BI 
+.
+.SH DESCRIPTION
+.
+.SH EXAMPLE
+.
+.SH SEE ALSO
+.BR ctt "(3), " ctt_getdents "(3), " ctt_get_keypress "(3), "
+.BR ctt_get_line "(3), " ctt_indexed_string "(3), "
+.BR ctt_itoa_buff "(3), "  ctt_pick_from_list "(3), "
+.BR ctt_process_options "(3)"
+

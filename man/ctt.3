@@ -1,0 +1,79 @@
+.TH ctt 3 "\n[year]-\n[mo]-\n[dy]" "Linux"
+.
+.SH NAME
+ctt - C Terminal Tools: collection of functions
+.
+.SH SYNOPSIS
+.nf
+.B #include <ctt.h>
+.PP
+.nf
+.BI "void ctt_start(" void );
+.BI "void ctt_is_started(" void );
+.BI "const char *ctt_indexed_string(const NString *" nstrings, " int  " value );
+.BI "int ctt_getdents( ctt_usedent_t " duser ", const char *" dirpath ", char *" buff ", int " bufflen ", void *" data );
+.BI "int ctt_init_line_reader(LRScope *" scope ", char *" buffer ", int " buffsize ", int " file_handle );
+.BI "int ctt_get_line(LRScope *" scope ", const char **" line ", const char **" line_end );
+.BI "int ctt_get_keypress(char *" buff ", int " bufflen );
+.BI "int ctt_pick_from_list(ObjPlace *" placement ", const char **" list ", int " list_count ", int " top ", int " selected );
+.BI "void ctt_opt_set_int(const ctt_Option *" option ", const char *" value );
+.BI "void ctt_opt_set_string(const ctt_Option *" option ", const char *" value );
+.BI "void ctt_show_options(const ctt_Option *"options );
+.BI "void ctt_process_options(const ctt_Option *" options ", int " argc ", const char **" argv );
+.BI "int ctt_itoa_buff(int " value ", int " base ", char *" buffer ", int " buffer_len );
+
+
+.SH DESCRIPTION
+There is a variety of structures supporting the functions in this
+library.
+.PP
+The
+.I NString
+structure is a simple structure used for defining a set of indexed
+strings that can be accessed with
+.BR ctt_indexed_string ().
+.PP
+.in +4n
+.EX
+typedef struct _indexed_string
+{
+   int index;
+   const char *str;
+} NString;
+.EE
+.in
+.PP
+These is a special
+.I NString
+.RB "value, " END_STRNDX ", with"
+.IR index " = -1"
+that signals the end of an array of
+.I NString
+values.
+.TP
+.I index
+The integer value for which a given string will be returned.  The
+.I index
+values in a set of
+.I NString
+records need not be consecutive or ordered.
+.TP
+.I str
+is the string to associated with the integer value.
+
+
+\" typedef struct _indexed_string
+\" {
+\"    int index;
+\"    const char *str;
+\" } NString;
+
+\" #define END_STRNDX { -1, NULL }
+\" const char *ctt_indexed_string(const NString *nstrings, int value);
+
+
+.SH SEE ALSO
+.BR ctt_getdents "(3), " ctt_get_keypress "(3), "
+.BR ctt_get_line "(3), " ctt_indexed_string "(3), "
+.BR ctt_itoa_buff "(3), "  ctt_pick_from_list "(3), "
+.BR ctt_process_options "(3)"
