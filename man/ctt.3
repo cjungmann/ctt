@@ -10,16 +10,35 @@ ctt - C Terminal Tools: collection of functions
 .nf
 .BI "void ctt_start(" void );
 .BI "void ctt_is_started(" void );
+.
+.PP
 .BI "const char *ctt_indexed_string(const NString *" nstrings, " int  " value );
+.
+.PP
+.BI "int ctt_dir_walk_init(DWalkEnv *" env ", const char *" path ", char *" buffer ", int " buffer_len )
+.BI "int ctt_dir_walk_next(DWalkEnv *" env ", const char **" name ", char * " type ", long *" inode )
+.BI "void ctt_dir_walk_release(DWalkEnv *" env )
+.
+.PP
 .BI "int ctt_getdents( ctt_usedent_t " duser ", const char *" dirpath ", char *" buff ", int " bufflen ", void *" data );
+.
+.PP
 .BI "int ctt_init_line_reader(LRScope *" scope ", char *" buffer ", int " buffsize ", int " file_handle );
 .BI "int ctt_get_line(LRScope *" scope ", const char **" line ", const char **" line_end );
+.
+.PP
 .BI "int ctt_get_keypress(char *" buff ", int " bufflen );
+.
+.PP
 .BI "int ctt_pick_from_list(ObjPlace *" placement ", const char **" list ", int " list_count ", int " top ", int " selected );
+.
+.PP
+.BI "void ctt_process_options(const ctt_Option *" options ", int " argc ", const char **" argv );
+.BI "void ctt_show_options(const ctt_Option *"options );
 .BI "void ctt_opt_set_int(const ctt_Option *" option ", const char *" value );
 .BI "void ctt_opt_set_string(const ctt_Option *" option ", const char *" value );
-.BI "void ctt_show_options(const ctt_Option *"options );
-.BI "void ctt_process_options(const ctt_Option *" options ", int " argc ", const char **" argv );
+.
+.PP
 .BI "int ctt_itoa_buff(int " value ", int " base ", char *" buffer ", int " buffer_len );
 
 
@@ -73,6 +92,7 @@ is the string to associated with the integer value.
 
 
 .SH SEE ALSO
+.BR ctt_dir_walk "(3), "
 .BR ctt_getdents "(3), " ctt_get_keypress "(3), "
 .BR ctt_get_line "(3), " ctt_indexed_string "(3), "
 .BR ctt_itoa_buff "(3), "  ctt_pick_from_list "(3), "
