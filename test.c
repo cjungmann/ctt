@@ -17,8 +17,9 @@ int flagKeyReader = 0;
 int flagLineReader = 0;
 int flagListPick = 0;
 int flagItoaTest = 0;
+int flagDirWalkTest = 0;
 const char *FileName = NULL;
-const char *GetDentsDir = NULL;
+const char *DirPath = ".";
 unsigned int BufferSize = 1024;
 
 
@@ -29,8 +30,9 @@ ctt_Option opts[] = {
    { 'r', "Run key_reader demo.",   &flagKeyReader,  NULL },
    { 'l', "Run line_reader demo.",  &flagLineReader, NULL },
    { 'p', "Run list_pick demo.",    &flagListPick,   NULL },
+   { 'w', "Run dir_walk demo.",     &flagDirWalkTest,NULL },
    { 'i', "Run ctt_itoa_buff test.",&flagItoaTest,   NULL },
-   { 'd', "Set getdents dir.",      &GetDentsDir,    ctt_opt_set_string },
+   { 'd', "Set directory path.",    &DirPath,        ctt_opt_set_string },
    OPTS_END
 };
 
@@ -209,7 +211,7 @@ void demonstrate_getdents(void)
    char *buff = (char*)alloca(BufferSize);
    if (buff)
    {
-      int rerrno = ctt_getdents(usedent_callback, GetDentsDir, buff, BufferSize, &count);
+      int rerrno = ctt_getdents(usedent_callback, DirPath, buff, BufferSize, &count);
       if (rerrno)
          printf("ctt_getdents failed with %s.\n", strerror(rerrno));
    }
@@ -226,6 +228,34 @@ void run_itoa_subtest(int buffer_len, int value)
    else
       printf("Converting %d with %d-length buffer overflows.\n",
              value, buffer_len);
+}
+
+void demonstrate_dir_walk(void)
+{
+   char *buffer = (char*)alloca(BufferSize);
+   DWalkEnv env;
+
+   const char *name;
+   const char *hilite;
+   char type;
+   long inode;
+   if (ctt_dir_walk_init(&env, DirPath, buffer, BufferSize))
+   {
+      printf("Printing the contents of [32;1m%s[m directory.\n", DirPath);
+
+      int count = 0;
+      while (ctt_dir_walk(&env, &name, &type, &inode))
+      {
+         hilite = ctt_indexed_string(DType_Colors, type);
+         if (hilite)
+            fputs(hilite, stdout);
+         printf("%-3d: %s[m\n", ++count, name);
+      }
+
+      ctt_dir_walk_release(&env);
+   }
+   else
+      printf("Failed to open \"%s\" directory.\n", DirPath);
 }
 
 void run_itoa_test(void)
@@ -250,19 +280,10 @@ int main(int argc, const char **argv)
 
    ctt_process_options(opts, argc, argv);
 
-   printf("GetDentsDir is \"%s\"\n", GetDentsDir);
-
    if (flagShowHelp)
       ctt_show_options(opts);
-   else if (GetDentsDir)
-      demonstrate_getdents();
    else
    {
-      if (FileName)
-         printf("You set filename to %s.\n", FileName);
-      else
-         printf("You did not set the filename.\n");
-
       if (BufferSize)
          printf("You set the buffer size to %d.\n", BufferSize);
       else
@@ -279,6 +300,9 @@ int main(int argc, const char **argv)
 
       if (flagItoaTest)
          run_itoa_test();
+
+      if (flagDirWalkTest)
+         demonstrate_dir_walk();
    }
 
    return 0;

@@ -20,7 +20,7 @@ int ctt_is_started(void);
 
 
 /************************
- * seek_indexed_string()
+ * ctt_indexed_string()
  ***********************/                      
 typedef struct _indexed_string
 {
@@ -42,9 +42,31 @@ typedef struct ctt_object_placement
    int   width;
 } ObjPlace;
 
-/*************************
- * dir_iterate.c
- ****************/
+/*******************
+ * ctt_dir_walk_*()
+ ******************/
+
+typedef struct linux_dirent LDirent;
+
+typedef struct ctt_dir_walk_env {
+   const char *dir;
+   char       *buffer;
+   int        buffer_len;
+   LDirent    *data_ptr;
+   LDirent    *end_ptr;
+
+   int        fd;
+   int        error_state;
+} DWalkEnv;
+
+int ctt_dir_walk_init(DWalkEnv *env, const char *path, char *buffer, int buffer_len);
+int ctt_dir_walk(DWalkEnv *env, const char **name, char *type, long *inode);
+void ctt_dir_walk_release(DWalkEnv *env);
+
+/******************************************
+ * ctt_getdents()
+ * Deprecated: use ctt_dir_walk*() instead
+ *****************************************/
 // Calback function for ctt_getdents()
 typedef void (*ctt_usedent_t)(const char *name,
                               const char *dir,
@@ -60,6 +82,7 @@ int ctt_getdents(ctt_usedent_t duser,
 
 
 /************************************
+ * ctt_get_line()
  * Line Reader struct and functions 
  ************************************/
 typedef struct ctt_line_reader
