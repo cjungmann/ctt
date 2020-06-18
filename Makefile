@@ -5,7 +5,7 @@ LOCAL_LINK = -Wl,-R -Wl,. libctt.so
 
 BASEFLAGS = -Wall -Werror -ggdb
 # MODULES = procopts.o line_reader.o key_reader.o picker.o
-MODULES = ctt.o cusses.o dir_iterate.o line_reader.o list_pick.o key_reader.o procopts.o utilities.o
+MODULES = ctt.o cusses.o dir_iterate.o dir_walk.o line_reader.o list_pick.o key_reader.o procopts.o utilities.o
 MANFILES = $(wildcard man/*)
 
 CC = gcc
@@ -36,6 +36,9 @@ ctt.o : ctt.h ctt.c
 
 dir_iterate.o : dir_iterate.c
 	$(CC) ${LIB_CFLAGS} -c -o dir_iterate.o dir_iterate.c
+
+dir_walk.o : dir_walk.c
+	$(CC) ${LIB_CFLAGS} -c -o dir_walk.o dir_walk.c
 
 cusses.o : cusses.h cusses.c
 	$(CC) ${LIB_CFLAGS} -c -o cusses.o cusses.c
@@ -70,7 +73,7 @@ uninstall :
 clean :
 	rm -f $(MODULES)
 	rm -f libctt.so
-	rm -f ctt cusses dir_iterate key_reader line_reader list_pick procopts test
+	rm -f ctt cusses dir_iterate dir_walk key_reader line_reader list_pick procopts test
 
 install_man :
 	$(call install_man_pages)
