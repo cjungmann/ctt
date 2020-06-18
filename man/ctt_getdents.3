@@ -1,17 +1,48 @@
 .TH ctt_getdents 3 "\n[year]-\n[mo]-\n[dy]" "Linux"
 .
 .SH NAME
-ctt_getdents - 
+ctt_getdents - Get list of file names and types from a directory
 .
 .SH SYNOPSIS
 .PP
 .B #include <ctt.h>
 .PP
-.BI 
+.BI "typedef void (*ctt_usedent_t)(const char *" name ", const char *" dir ", char " d_type ", long " inode ", void *" data );
+.
+.BI "int ctt_getdents(ctt_usedent_t " duser ", const char *" dirpath ", char *" buff ", int " bufflen ", void *" data );
 .
 .SH DESCRIPTION
 .
 .SH EXAMPLE
+.EX
+#include <dirent.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctt.h>
+
+void count_regular(const char *name, const char *dir, char d_type, long inode, void *data)
+{
+   ++*(int*)data;
+}
+
+int main(int argc, const char **argv)
+{
+   const char *dpath = "/usr/bin";
+   if (argc > 1)
+      dpath = argv[1];
+
+   char buff[1024];
+
+   int count = 0;
+   int errnum = 0;
+   if (!(errnum=ctt_getdents(count_regular, dpath, buff, sizeof(buff), &count)))
+      printf("There are %d regular files in %s.\n", count, dpath);
+   else
+      printf("Error scanning directory %s: %s.\n", dpath, strerror(errnum));
+
+   return 0;
+}
+.EE
 .
 .SH SEE ALSO
 .BR ctt "(3), " ctt_get_keypress "(3), "
