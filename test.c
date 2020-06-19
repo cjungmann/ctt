@@ -110,7 +110,6 @@ const char *keyreader_demo_text = "\n"
 void demonstrate_key_reader(void)
 {
    char buff[10];
-   ctt_start();
 
    puts(keyreader_demo_text);
 
@@ -134,8 +133,8 @@ void fill_screen(int fill_char)
    for (int r=0; r<rows; ++r)
    {
       for (int c=0; c<cols; ++c)
-         write(tty_handle, &fill_char, 1);
-      write(tty_handle, "\n", 1);
+         write(STDIN_FILENO, &fill_char, 1);
+      write(STDIN_FILENO, "\n", 1);
    }
 }
 
@@ -276,8 +275,6 @@ void run_itoa_test(void)
 
 int main(int argc, const char **argv)
 {
-   ctt_start();
-
    ctt_process_options(opts, argc, argv);
 
    if (flagShowHelp)
