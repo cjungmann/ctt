@@ -5,18 +5,8 @@
 #include <dirent.h>
 
 #define EXPORT __attribute__((visibility("default")))
-struct termios _termios_start;
-int tty_handle;
 
 #include "cusses.h"
-
-/*************************
- * Base Library functions
- ************************/
-
-void ctt_start(void);
-int ctt_is_started(void);
-
 
 
 /************************
