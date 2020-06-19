@@ -131,8 +131,6 @@ void fill_screen(int fill_char)
 
 int main(int argc, const char **argv)
 {
-   ctt_start();
-
    ObjPlace placement = { 10, 10, 10, 40 };
 
    fill_screen('.');

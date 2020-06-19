@@ -86,8 +86,6 @@ EXPORT void ctt_get_screen_size(int *rows, int *cols)
 
 int main(int argc, const char **argv)
 {
-   ctt_start();
-
    int rows, cols;
    printf("In console_control.\n");
 
