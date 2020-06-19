@@ -113,11 +113,8 @@ int main(int argc, const char **argv)
 #endif
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcomment"
-// Local Variables:
-// compile-command: "base=dir_walk; \
-//   gcc -Wall -Werror -ggdb -D${base^^}_MAIN \
-//   -DDEBUG -o $base ${base}.c"
-// End:
-#pragma GCC diagnostic pop
+/* Local Variables: */
+/* compile-command: "base=dir_walk;             \*/
+/*     gcc -Wall -Werror -ggdb -D${base^^}_MAIN \*/
+/*     -DDEBUG -o $base ${base}.c" */
+/* End: */
