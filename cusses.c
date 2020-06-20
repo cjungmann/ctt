@@ -8,18 +8,20 @@
 
 #include "ctt.h"
 
-
-// Private functions in key_reader.c
-void set_raw_mode(void);
+// Prototypes for private functions in key_reader.c
+typedef void (*raw_mode_t)(void);
+extern raw_mode_t set_raw_mode;
 void unset_raw_mode(void);
 
-int tty_write(const char *str)           { return write(tty_handle, str, strlen(str)); }
-int tty_read(char *buffer, int len_buff) { return read(tty_handle, buffer, len_buff); }
+#define CHANDLE STDIN_FILENO
 
-EXPORT void ctt_cursor_right(int chars)      { dprintf(tty_handle, "[%dC", chars); }
+int tty_write(const char *str)           { return write(CHANDLE, str, strlen(str)); }
+int tty_read(char *buffer, int len_buff) { return read(CHANDLE, buffer, len_buff); }
+
+EXPORT void ctt_cursor_right(int chars)      { dprintf(CHANDLE, "[%dC", chars); }
 
 EXPORT void ctt_clear(void)                  { tty_write("[2J"); }
-EXPORT void ctt_set_cursor(int row, int col) { dprintf(tty_handle, "[%d;%dH", row, col); }
+EXPORT void ctt_set_cursor(int row, int col) { dprintf(CHANDLE, "[%d;%dH", row, col); }
 
 EXPORT void ctt_get_cursor(int *row, int *col)
 {
@@ -27,7 +29,7 @@ EXPORT void ctt_get_cursor(int *row, int *col)
 
    *row = *col = -1;
 
-   set_raw_mode();
+   (*set_raw_mode)();
  
    int bytes_xfer = tty_write("[6n");
    bytes_xfer = tty_read(buff, sizeof(buff));
