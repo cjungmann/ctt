@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+color_nums=( 1 2 3 4 5 6 7 )
+colnames=( black red green brown blue magenta cyan white )
+
+declare -i num
+for num in  "${color_nums[@]}"; do
+    echo "[3${num};2m${colnames[$num]} dimmed (3${num};2)[m"
+    echo "[3${num}m${colnames[$num]} normal (3${num})[m"
+    echo "[3${num};1m${colnames[$num]} bold (3${num};1)[m"
+done

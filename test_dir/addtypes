@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+echo "Test text" > regular.file
+cp -s regular.file symlink.file
+mkdir dir.dir
+ln -s dir.dir symlink.dir
+mkfifo fifo.pipe
+nc -lkU Socket.sock &
