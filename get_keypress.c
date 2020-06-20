@@ -157,7 +157,7 @@ int main(int argc, const char **argv)
 
 
 /* Local Variables: */
-/* compile-command: "b=key_reader; \*/
+/* compile-command: "b=get_keypress; \*/
 /*  gcc -Wall -Werror -ggdb \*/
 /*  -D${b^^}_MAIN           \*/
 /*  -o $b ${b}.c            \*/
