@@ -7,11 +7,59 @@ ctt_get_keypress - Returns a string representing a single keypress
 .PP
 .B #include <ctt.h>
 .PP
-.BI 
+.BI "int ctt_get_keypress(char *"buff ", int " bufflen );
+
 .
 .SH DESCRIPTION
+This function identifies a keypress with a character string.  This is
+particularly handy for responding to specific keys, like arrow keys
+or function keys.
 .
 .SH EXAMPLE
+.PP
+Compile example with something like:
+.br
+.I gcc -o ctt_get_keypress ctt_get_keypress.c -lctt
+.
+.PP
+.EX
+#include <stdio.h>
+#include <ctype.h>  // for iscntrl()
+#include <ctt.h>
+
+void print_char_vals(const char *str)
+{
+   while (*str)
+   {
+      if (iscntrl(*str))
+         printf("\\e[31m^%c\\e[m", (*str)+64);
+      else
+         printf("%c", *str);
+
+      ++str;
+   }
+}
+
+int main(int argc, const char **argv)
+{
+   char buff[10];
+   int count = 0;
+
+   printf("Press a key to see its output, 'q' to quit..\\nTry function keys; use the control key.\\n");
+   printf("\\n");
+   printf("Control characters will be displayed in red with a ^ prefix.\\n");
+
+   while ( ctt_get_keypress(buff, sizeof(buff)) && *buff != 'q' )
+   {
+      printf("%-3d: ", ++count);
+      print_char_vals(buff);
+      printf("\n");
+   }
+
+   return 0;
+}
+.EE
+
 .
 .SH SEE ALSO
 .BR ctt "(3), " ctt_dir_walk "(3), " ctt_getdents "(3), "
