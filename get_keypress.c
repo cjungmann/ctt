@@ -155,7 +155,6 @@ int main(int argc, const char **argv)
 
 #endif
 
-
 /* Local Variables: */
 /* compile-command: "b=get_keypress; \*/
 /*  gcc -Wall -Werror -ggdb \*/
