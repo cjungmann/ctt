@@ -105,7 +105,7 @@ EXPORT int ctt_get_keypress(char *buff, int bufflen)
    return ptr > buff;
 }
 
-#ifdef KEY_READER_MAIN
+#ifdef GET_KEYPRESS_MAIN
 
 #include <stdio.h>
 const char test_prefix[] = 
