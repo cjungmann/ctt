@@ -6,17 +6,13 @@ ctt - C Terminal Tools: collection of functions
 .SH SYNOPSIS
 .nf
 .B #include <ctt.h>
-.PP
-.nf
-.BI "void ctt_start(" void );
-.BI "void ctt_is_started(" void );
 .
 .PP
 .BI "const char *ctt_indexed_string(const NString *" nstrings, " int  " value );
 .
 .PP
 .BI "int ctt_dir_walk_init(DWalkEnv *" env ", const char *" path ", char *" buffer ", int " buffer_len )
-.BI "int ctt_dir_walk_next(DWalkEnv *" env ", const char **" name ", char * " type ", long *" inode )
+.BI "int ctt_dir_walk(DWalkEnv *" env ", const char **" name ", char * " type ", long *" inode )
 .BI "void ctt_dir_walk_release(DWalkEnv *" env )
 .
 .PP
