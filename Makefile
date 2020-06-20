@@ -4,8 +4,8 @@ LIB_DBFLAGS = ${LIB_CFLAGS} -ggdb
 LOCAL_LINK = -Wl,-R -Wl,. libctt.so
 
 BASEFLAGS = -Wall -Werror -ggdb
-# MODULES = procopts.o line_reader.o key_reader.o picker.o
-MODULES = ctt.o cusses.o dir_iterate.o dir_walk.o line_reader.o list_pick.o key_reader.o procopts.o utilities.o
+# MODULES = process_options.o get_line.o get_keypress.o picker.o
+MODULES = ctt.o cusses.o dir_iterate.o dir_walk.o get_line.o pick_from_list.o get_keypress.o process_options.o utilities.o
 MANFILES = $(wildcard man/*)
 
 CC = gcc
@@ -43,17 +43,17 @@ dir_walk.o : dir_walk.c
 cusses.o : cusses.h cusses.c
 	$(CC) ${LIB_CFLAGS} -c -o cusses.o cusses.c
 
-line_reader.o : line_reader.c ctt.h
-	$(CC) ${LIB_CFLAGS} -c -o line_reader.o line_reader.c
+get_line.o : get_line.c ctt.h
+	$(CC) ${LIB_CFLAGS} -c -o get_line.o get_line.c
 
-list_pick.o : list_pick.c ctt.h
-	$(CC) ${LIB_CFLAGS} -c -o list_pick.o list_pick.c
+pick_from_list.o : pick_from_list.c ctt.h
+	$(CC) ${LIB_CFLAGS} -c -o pick_from_list.o pick_from_list.c
 
-key_reader.o : key_reader.c ctt.h
-	$(CC) ${LIB_CFLAGS} -c -o key_reader.o key_reader.c
+get_keypress.o : get_keypress.c ctt.h
+	$(CC) ${LIB_CFLAGS} -c -o get_keypress.o get_keypress.c
 
-procopts.o : procopts.c ctt.h
-	$(CC) ${LIB_CFLAGS} -c -o procopts.o procopts.c
+process_options.o : process_options.c ctt.h
+	$(CC) ${LIB_CFLAGS} -c -o process_options.o process_options.c
 
 utilities.o : utilities.c ctt.h
 	$(CC) ${LIB_CFLAGS} -c -o utilities.o utilities.c
@@ -73,7 +73,7 @@ uninstall :
 clean :
 	rm -f $(MODULES)
 	rm -f libctt.so
-	rm -f ctt cusses dir_iterate dir_walk key_reader line_reader list_pick procopts test
+	rm -f ctt cusses dir_iterate dir_walk get_keypress get_line pick_from_list process_options test
 
 install_man :
 	$(call install_man_pages)
