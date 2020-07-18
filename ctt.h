@@ -75,6 +75,8 @@ int ctt_getdents(ctt_usedent_t duser,
  * ctt_get_line()
  * Line Reader struct and functions 
  ************************************/
+typedef int (*ctt_read_source)(void *source, char *buffer, int bytes_to_read);
+
 typedef struct ctt_line_reader
 {
    char *buffer;
@@ -85,10 +87,17 @@ typedef struct ctt_line_reader
 
    int  eof;
 
-   int  file_handle;
+   ctt_read_source reader;
+   void *source;
 } LRScope;
 
-int ctt_init_line_reader(LRScope *scope, char *buffer, int buffsize, int file_handle);
+int ctt_init_line_reader(LRScope *scope,
+                         char *buffer,
+                         int buffsize,
+                         ctt_read_source rfunc,
+                         void *source);
+
+int ctt_init_line_reader_with_file(LRScope *scope, char *buffer, int buffsize, int *file_handle);
 int ctt_get_line(LRScope *scope, const char** line, const char** line_end);
 
 
