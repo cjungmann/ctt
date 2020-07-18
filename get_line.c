@@ -82,7 +82,7 @@ int _refresh_buffer(LRScope *scope)
    size_t bytes_to_read = scope->buffer_end - scope->data_end;
    ssize_t bytes_read;
 
-   bytes_read = read(scope->file_handle, scope->data_end, bytes_to_read);
+   bytes_read = (*scope->reader)(scope->source, scope->data_end, bytes_to_read);
    if (bytes_read > 0)
    {
       // Set data boundaries
@@ -105,18 +105,40 @@ int _refresh_buffer(LRScope *scope)
    }
 }
 
-EXPORT int ctt_init_line_reader(LRScope *scope, char *buffer, int buffsize, int file_handle)
+
+EXPORT int ctt_init_line_reader(LRScope *scope,
+                                char *buffer,
+                                int buffsize,
+                                ctt_read_source rfunc,
+                                void *source)
 {
    memset(scope, 0, sizeof(LRScope));
 
    scope->buffer = buffer;
    scope->buffer_end = scope->buffer + buffsize;
-
-   scope->file_handle = file_handle;
-
    scope->data_end = scope->line_ptr = scope->buffer;
 
+   scope->reader = rfunc;
+   scope->source = source;
+
    return _refresh_buffer(scope);
+}
+
+
+int read_source_from_file(void *source, char *buffer, int bytes_to_read)
+{
+   int fh = *(int*)source;
+   return read(fh, buffer, bytes_to_read);
+}
+
+EXPORT int ctt_init_line_reader_with_file(LRScope *scope,
+                                          char *buffer,
+                                          int buffsize,
+                                          int *file_handle)
+{
+   return ctt_init_line_reader(scope, buffer, buffsize,
+                               read_source_from_file,
+                               file_handle);
 }
 
 EXPORT int ctt_get_line(LRScope *scope, const char** line, const char** line_end)
