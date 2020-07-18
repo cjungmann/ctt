@@ -84,7 +84,7 @@ void demonstrate_line_reader(void)
    {
       char *buffer = (char*)malloc(BufferSize);
       LRScope scope;
-      ctt_init_line_reader(&scope, buffer, BufferSize, file_handle);
+      ctt_init_line_reader_with_file(&scope, buffer, BufferSize, &file_handle);
 
       const char *line, *line_end;
       int count = 0;
