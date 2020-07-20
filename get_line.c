@@ -98,10 +98,14 @@ int _refresh_buffer(LRScope *scope)
    }
    else
    {
-      fprintf(stderr, "Failed to read file: %s.\n", strerror(errno));
-      scope->line_ptr = scope->data_end = scope->buffer;
-      scope->eof = 1;
-      return 0;
+      if (errno)
+      {
+         scope->line_ptr = scope->data_end = scope->buffer;
+         scope->eof = 1;
+         return 0;
+      }
+      else
+         return 1;
    }
 }
 
@@ -171,7 +175,7 @@ EXPORT int ctt_get_line(LRScope *scope, const char** line, const char** line_end
 
       return 1;
    }
-   else
+   else if (scope->buffer != scope->data_end)
       fprintf(stderr, "Buffer size %d insufficient for line in file.\n", _buffer_size(scope));
 
    return 0;
