@@ -98,6 +98,7 @@ int ctt_init_line_reader(LRScope *scope,
                          void *source);
 
 int ctt_init_line_reader_with_file(LRScope *scope, char *buffer, int buffsize, int *file_handle);
+void ctt_reset_line_reader(LRScope *scope);
 int ctt_get_line(LRScope *scope, const char** line, const char** line_end);
 
 

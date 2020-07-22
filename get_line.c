@@ -98,14 +98,9 @@ int _refresh_buffer(LRScope *scope)
    }
    else
    {
-      if (errno)
-      {
-         scope->line_ptr = scope->data_end = scope->buffer;
-         scope->eof = 1;
-         return 0;
-      }
-      else
-         return 1;
+      scope->line_ptr = scope->data_end = scope->buffer;
+      scope->eof = 1;
+      return 0;
    }
 }
 
@@ -126,6 +121,12 @@ EXPORT int ctt_init_line_reader(LRScope *scope,
    scope->source = source;
 
    return _refresh_buffer(scope);
+}
+
+EXPORT void ctt_reset_line_reader(LRScope *scope)
+{
+   scope->data_end = scope->line_ptr = scope->buffer;
+   scope->eof = 0;
 }
 
 
